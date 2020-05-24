@@ -380,7 +380,7 @@
 			width: 100%;
 			background: #f9f9f9;
 			position: fixed;
-			z-index: 2;
+			z-index: 20;
 			.uni_nav_bar{
 				margin-top: 20upx;
 			}

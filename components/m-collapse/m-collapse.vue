@@ -247,7 +247,9 @@
 		font-size: 28upx;
 		line-height: inherit
 	}
-
+    .uni-triplex-left {
+        padding-left: 5px;
+    }
 	.example {
 		padding: 0 30upx 30upx
 	}

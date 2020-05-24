@@ -18,9 +18,11 @@
 .icon-fav:before {
   content: "\e62e";
   color: red;
+  padding-right: 10upx;
 }
 
 .icon-unfav::before{
 	content: "\e62e";
 	color: #dddddd;
+    padding-right: 10upx;
 }
