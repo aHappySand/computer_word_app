@@ -47,7 +47,7 @@
     "statusbar": {
       "immersed": "supportedDevice",
       "style": "dark",
-      "background": "#0faeff"
+      "background": "#fbf9fe"
     },
     "usingComponents": true,
     "compilerVersion": 3,
@@ -99,6 +99,7 @@
           "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
           "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
           "<uses-permission android:name=\"android.permission.INTERNET\"/>",
+          "<uses-permission android:name=\"android.permission.MOUNT_FORMAT_FILESYSTEMS\"/>",
           "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
           "<uses-permission android:name=\"android.permission.READ_CONTACTS\"/>",
           "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
@@ -106,8 +107,11 @@
           "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
           "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
           "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
+          "<uses-permission android:name=\"android.permission.WRITE_CALENDAR\"/>",
+          "<uses-permission android:name=\"android.permission.WRITE_CALL_LOG\"/>",
           "<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>",
           "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
+          "<uses-permission android:name=\"android.permission.WRITE_SECURE_SETTINGS\"/>",
           "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
         ]
       },
@@ -116,6 +120,7 @@
         "payment": {
           "alipay": {}
         },
+        "ad": {},
         "audio": {
           "mp3": {
             "description": "Android平台录音支持MP3格式文件"

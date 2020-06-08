@@ -6,7 +6,7 @@ import md5 from '../js/md5';
 import SHA256 from '../js/sha256.js';
 import myConf from "../myConf";
 
-
+console.log(myConf)
 /**
  * 请求接口日志记录
  */
@@ -137,8 +137,10 @@ export default {
 		//设置token值
 		this.config.header['X-Token'] = uni.getStorageSync('info') ? uni.getStorageSync('info').token : '';
 		this.config.header['Content-Type'] = 'application/x-www-form-urlencoded';
-        options.data.versionName = myConf.YKZ_API_VERSION;
-		common_request(options);
+        if(options.data){
+            options.data.versionName = myConf.API_VERSION;
+        }
+		return this.common_request(options);
 	},
 	common_request(options) {
 		if (!options) {
@@ -147,6 +149,10 @@ export default {
 		
 		options.data = options.data || {}
 		
+        if(options.url.indexOf('http') != 0){//说明使用基本配置
+            options.url = this.config.baseUrl + options.url
+        }
+        
 	    let _this = this;
 		return new Promise((resolve, reject) => {
 			let _config = null

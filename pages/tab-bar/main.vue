@@ -1,24 +1,27 @@
 <template>
-	<view class="content">
-		<view class="navbar">
-			<uni-nav-bar class="uni_nav_bar" :fixed="false" backgroundColor="#f9f9f9" color="#333333" :status-bar="true" :border="false" :shadow="false" :transparent="true"
-			  right-icon="search" @click-left="showCity" @click-right="scan">
-				<block slot="left">
-					<view class="transfer">
-						<view>{{ transfer }}</view>
-						<uni-icons type="arrowdown" color="#333333" size="22" />
-					</view>
-				</block>
-				<view class="input-view">
-					<!-- <uni-icons type="search" size="22" color="#666666" /> -->
-					<input confirm-type="search" class="input" type="text" placeholder="输入搜索关键词" @confirm="confirm">
-				</view>
-			</uni-nav-bar>
-		</view>
-		
-		<view class="word-history">
-			<m-collapse></m-collapse>
-		</view>
+	<view >
+        <uni-nav-bar class="uni_nav_bar" :fixed="true" :backgroundColor="navBgColor" :status-bar="true" :border="false" :shadow="false" :transparent="true"
+          :right-icon="rightType" @click-left="showTransType" @click-right="addOrSearch">
+            <block slot="left">
+                <view class="transfer">
+                    <view>{{ transfer }}</view>
+                    <view><uni-icons type="arrowdown" color="#333333" size="20" /></view>
+                </view>
+            </block>
+            <view class="input-view search-input">
+                <input confirm-type="search" v-model="searchWord" @focus="onSearchWord" @input="onSearchWord" class="input" type="text" placeholder="输入搜索关键词" @confirm="addOrSearch">
+            </view>
+        </uni-nav-bar>
+		<view class="content">
+            <view v-if="searchWord == ''" class="word-history">
+            	<m-collapse :wordData="accordion" v-on:change="changeFav"></m-collapse>
+            </view>
+            <view v-else>
+                <uni-list>
+                	<uni-list-item v-for="(item, key) in selectData" :key="key" @click="goDetail(value)"  :show-arrow="false" :title="item.spell" :note="item.translation" />
+                </uni-list>
+            </view>
+        </view>
 	</view>
 </template>
 
@@ -27,7 +30,8 @@
 	import uniIcons from '@/components/uni-icons/uni-icons.vue'
 	import uniNavBar from '@/components/uni-nav-bar/uni-nav-bar.vue'
 	import mCollapse from '@/components/m-collapse/m-collapse.vue'
-	
+	import uniList from '@/components/uni-list/uni-list.vue'
+	import uniListItem from '@/components/uni-list-item/uni-list-item.vue'
 	import {
 		mapState
 	} from 'vuex'
@@ -37,19 +41,310 @@
 		components: {
 			uniIcons,
 			uniNavBar,
-			mCollapse
+			mCollapse,
+            uniList,
+            uniListItem
 		},
 		data() {
 			return {
+                navBgColor: '#f9f9f9',
 				transfer: '有道',
 				content: '',
+                rightType: 'plus',
+                searchWord: '',
+                selectData: [
+                    {
+                        'spell': 'sss',
+                        'translation': '哈哈'
+                    },
+                    {
+                        'spell': 'sss',
+                        'translation': '哈哈'
+                    },
+                    {
+                        'spell': 'sss',
+                        'translation': '哈哈'
+                    }
+                ],
+                accordion: [{
+                		id: 0,
+                		title: '标题文字',
+                		content: '手风琴效果',
+                		animation: true,
+                		fav: 1
+                	},
+                	{
+                		id: 1,
+                		title: '标题文字',
+                		content: '手风琴效果',
+                		animation: true,
+                		fav: 0
+                	},
+                	{
+                		id: 2,
+                		title: '标题文字',
+                		content: '手风琴效果',
+                		animation: true,
+                		fav:0
+                	},
+                    {
+                    	id: 3,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 4,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 5,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 6,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 7,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 8,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 9,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 10,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 11,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 12,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 13,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 14,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 15,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 16,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 17,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:18
+                    },
+                    {
+                    	id: 19,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id:20,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 21,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 33,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    },
+                    {
+                    	id: 23,
+                    	title: '标题文字',
+                    	content: '手风琴效果',
+                    	animation: true,
+                    	fav:0
+                    }
+                ]
 			}
 		},
 		onLoad() {
-			
+            // this.$DB.selectWord('test');
+            // this.$api.get('http://www.baidu.com').then(function(res){
+            //     console.log(res)
+            // });
 		},
+        onShow() {
+            let bgColor = uni.getStorageSync('nav-bg-color');
+            if(bgColor){
+                this.navBgColor = bgColor;
+            }
+        },
+        onNavigationBarSearchInputConfirmed(e){
+            console.log(e.text);
+        },
 		methods:{
-			search(){
+            showCity(){},
+            changeFav(index){
+                this.accordion[index].fav = !this.accordion[index].fav;
+            },
+            showTransType(){
+                
+            },
+            addOrSearch(){
+                console.log(this.rightType);
+                if(this.rightType == 'plus'){
+                    uni.navigateTo({
+                        url: '/pages/word/add'
+                    });
+                }else{
+                    if(this.searchWord){
+                        if(this.searchWord.match(/[\u4E00-\u9FA5]+/)){//中文
+                            
+                        }else{
+                            this.$DB.selectWord(q).then(function(res){
+                                if(res){
+                                    
+                                }else{
+                                    this.youdao(this.searchWord);
+                                }
+                            });
+                        }
+                    }
+                }
+            },
+            onSearchWord(){
+                console.log('search...');
+                if(this.searchWord){
+                    this.rightType = 'search';
+                }else{
+                    this.rightType = 'plus';
+                }
+                
+                this.rightType = 'search';
+            },
+            moveData(){
+                plus.io.requestFileSystem( plus.io.PRIVATE_WWW, function(fs){
+                    fs.root.getDirectory("_data", {create:true,exclusive:false}, function(picDE){
+                        plus.io.resolveLocalFileSystemURL('_www/static/_data/test.txt', function( fileEntry ) {
+                            fileEntry.remove( function ( entry ) {
+                                plus.console.log( "Remove succeeded" );
+                            }, function ( e ) {
+                                console.log( e.message );
+                            } );
+                             // fileEntry.moveTo(plus.io.PRIVATE_WWW, 'n.txt', function(fe){
+                             //    console.info("---- -");
+                             // }, function(error){
+                             //     fileEntry.remove( function ( entry ) {
+                             //        plus.console.log( "Remove succeeded" );
+                             //    }, function ( e ) {
+                             //        console.log( e.message );
+                             //    } );
+                                    
+                             //    console.log(error);  
+                             // });
+                        }, function(error){  
+                                console.info("error2:"+error.message);  
+                        });  
+                    }, function(error){
+                        console.info("error2:"+error.message);  
+                    })  
+                });
+
+                
+                return ;
+                plus.io.requestFileSystem( plus.io.PRIVATE_WWW, function( fs ) {
+                    
+                    fs.root.getFile('static/_data/word.db',{create:false}, function(fileEntry){
+                        plus.io.resolveLocalFileSystemURL("_doc",  function(picDE1) {
+                            picDE1.getDirectory("_data", {create:true,exclusive:false}, function(picDE){
+                                 fileEntry.moveTo(plus.io.PRIVATE_DOC, fileEntry.name, function(fe){
+                                    console.info("---- -");
+                                 }, function(error){  
+                                     console.log(error);  
+                                 })  
+                            }, function(error){  
+                                console.info("error2:"+error.message);  
+                            })  
+                        }, function(error){  
+                                console.info("error2:"+error.message);  
+                        });  
+                    }, function(e){
+                        console.log(e);
+                    });
+                    return ;
+                    
+
+                    // fileEntry.moveTo(plus.io.PRIVATE_DOC, "word.db", function( entry ){
+                    //     plus.console.log("New Path: " + entry.fullPath);
+                    // }, function( e ){
+                    //     console.log( e);
+                    // } );
+                });
+            },
+			searchLocalEnglish(q){
 				
 			},
 			login(){
@@ -147,7 +442,6 @@
 					}, function ( e ) {
 						console.log(e.message);
 						console.log(e);
-						alert( "Resolve file URL failed: " + e.message );
 					} );
 			},
 			
@@ -197,7 +491,6 @@
 				// 	}, function ( e ) {
 				// 		console.log(e.message);
 				// 		console.log(e);
-				// 		alert( "Resolve file URL failed: " + e.message );
 				// 	} );
 					
 					// return;
@@ -246,81 +539,92 @@
 			youdao(q){
 				var _this = this;
 				this.$api.youdao(q).then(function(res){
-					console.log(res);
 					let data = JSON.parse(res);
+                    console.log(data);
 					if(data.errorCode == "0"){//成功
-						// _this.saveYouDao(q, data);
+						_this.saveYouDao(q, data);
 					}else{
 						_this.$showToast('查询失败');
 					}
 				});
 			},
 			saveYouDao(q, data){
+                var word;
 				let basic = data.basic;
+                console.log(basic);
 				if(!basic || basic == "null"){
-				var word = 
-					{
-						spell:q,
-						phonetic: basic['phonetic']||"",
-						us_phonetic: basic['us-phonetic']||"",
-						uk_phonetic: basic['uk-phonetic']||"",
-						translation: data.translation.join("；"),
-					};
-					this.$DB.insertWord(word);
-					return ;
-				}
-				
-				var word = 
-					{
-						spell:q,
-						phonetic: basic['phonetic']||"''",
-						us_phonetic: basic['us-phonetic']||"''",
-						uk_phonetic: basic['uk-phonetic']||"''",
-						translation: data.translation.join("；"),
-					}
-				;
+                    word = 
+                        {
+                            spell:q,
+                            phonetic: basic['phonetic']||"",
+                            us_phonetic: basic['us-phonetic']||"",
+                            uk_phonetic: basic['uk-phonetic']||"",
+                            translation: data.translation.join("；"),
+                        };
+				}else{
+                    word =
+                    	{
+                    		spell:q,
+                    		phonetic: basic['phonetic']||"''",
+                    		us_phonetic: basic['us-phonetic']||"''",
+                    		uk_phonetic: basic['uk-phonetic']||"''",
+                    		translation: data.translation.join("；"),
+                    	}
+                    ;
+                }
 				
 				let details = [];
-				for(let k in basic['explains']){
-					let matchExplain = basic['explains'][k].match(/^(\w+)[\.\s\t]+(.*)$/);
-					if(matchExplain){
-						details.push({
-							word_type: matchExplain[1],
-							translation: matchExplain[2],
-						});
-					}
-				}
+                if(basic && basic != 'null'){
+                    for(let k in basic['explains']){
+                    	let matchExplain = basic['explains'][k].match(/^(\w+)[\.\s\t]+(.*)$/);
+                    	if(matchExplain){
+                    		details.push({
+                    			word_type: matchExplain[1],
+                    			translation: matchExplain[2],
+                    		});
+                    	}
+                    }
+                }
 				
 				let webDetails = [];
-				for(let k in data['web']){
-					let item = data['web'][k];
-					webDetails.push({
-						spell: item['key'],
-						translation: item['value'].join("；"),
-					});
-				}
-				
-				let _this = this;
-				this.$DB.insertWord(word).then(function(res){
-					
-					_this.$DB.getLatestWordId((id) => {
-						for(let k in details){
-							let detail = details[k];
-							detail['word_id'] = id;
-							_this.$DB.insertDetail(detail);
-						}
-						
-						for(let k in webDetails){
-							let detail = webDetails[k];
-							detail['word_id'] = id;
-							_this.$DB.insertWebDetail(detail);
-						}
-					});
-				}).catch(function(e){
-					console.log(e);
-				});
+                if(data['web'] && data['web'].length > 0){
+                    for(let k in data['web']){
+                    	let item = data['web'][k];
+                    	webDetails.push({
+                    		spell: item['key'],
+                    		translation: item['value'].join("；"),
+                    	});
+                    }
+                }
+                var dataTmp = {
+                    word: word,
+                    detail: details,
+                    webDetail: webDetails
+                };
+                
+				this.$saveWordDetail(dataTmp);
+                return;
+                uni.getNetworkType({
+                    success: function (res) {
+                        if(res.networkType == 'none'){
+                            data.word.is_sync = 0;
+                        }else{//发送到服务器
+                            data.word.is_sync = 1;
+                            
+                            let postData = {};
+                            for(var k in data){
+                                postData[k] = JSON.stringify(data[k]);
+                            }
+                            _this.$api.post();
+                        }
+                        _this.$DB.saveWord(data);
+                    }
+                });
 			},
-			updateYouDao(id, data){
+			selectWord(data){//对于汉字翻译，需要选择是那个单词，如果是1个，就默认查询
+                
+            },
+            updateYouDao(id, data){
 				let basic = data.basic;
 				if((!basic || basic == "null") && data.translation.length){
 					var word = 
@@ -371,59 +675,53 @@
 	}
 </script>
 
-<style lang="scss" scoped>
+<style>
+    .search-input{
+        background: #FFFFFF;
+        border-radius: 30upx;
+        padding: 0 3%;
+        margin-left: 2%;
+        margin-right: 2%;
+    }
+    
+    
+    .transfer {
+    	display: flex;
+    	flex-direction: row;
+    	align-items: center;
+    	justify-content: center;
+    	width: 100%;
+    	margin-left: 16upx;
+    	white-space: nowrap;
+    }
+    
 	.content{
 		background: #FFFFFF;
-		position: relative;
+		// position: relative;
 		padding: 0upx;
-		.navbar{
-			width: 100%;
-			background: #f9f9f9;
-			position: fixed;
-			z-index: 20;
-			.uni_nav_bar{
-				margin-top: 20upx;
-			}
-		}
-		
-		.word-history{
-			padding-top: 160upx;
-		}
-		
-		.transfer {
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			justify-content: center;
-			width: 100%;
-			margin-left: 16upx;
-			white-space: nowrap;
-		}
-		
-		.input-view {
-			width: 92%;
-			display: flex;
-			background-color: #e7e7e7;
-			height: 60upx;
-			border-radius: 30upx;
-			padding: 0 4%;
-			flex-wrap: nowrap;
-			margin: 14upx 0;
-			line-height: 60upx;
-			background: #f5f5f5;
-		}
-		
-		.input-view .uni-icon {
-			line-height: 60upx !important;
-		}
-		
-		.input-view .input {
-			height: 60upx;
-			line-height: 60upx;
-			width: 94%;
-			padding: 0 3%;
-		}
-		
-		
-	}
+    }
+       
+    .input-view {
+        width: 92%;
+        display: flex;
+        background-color: #e7e7e7;
+        height: 60upx;
+        border-radius: 30upx;
+        padding: 0 4%;
+        flex-wrap: nowrap;
+        margin: 14upx 0;
+        line-height: 60upx;
+        background: #f5f5f5;
+    }
+    
+    .input-view .uni-icon {
+        line-height: 60upx !important;
+    }
+    
+    .input-view .input {
+        height: 60upx;
+        line-height: 60upx;
+        width: 94%;
+        padding: 0 3%;
+    }
 </style>

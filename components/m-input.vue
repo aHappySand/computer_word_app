@@ -1,5 +1,5 @@
 <template>
-	<view class="m-input-view">
+	<view  :class="showClass" class="m-input-view">
 		<input :focus="focus" :type="inputType" :value="value" @input="onInput" class="m-input-input" :placeholder="placeholder"
 		 :password="type==='password'&&!showPassword" @focus="onFocus" @blur="onBlur" />
 		<!-- 优先显示密码可见按钮 -->
@@ -52,7 +52,8 @@
 			focus: {
 				type: [Boolean, String],
 				default: false
-			}
+			},
+            validate: String
 		},
 		model: {
 			prop: 'value',
@@ -67,7 +68,8 @@
 				/**
 				 * 是否获取焦点
 				 */
-				isFocus: false
+				isFocus: false,
+                showClass: '',
 			}
 		},
 		computed: {
@@ -86,13 +88,31 @@
 			onFocus() {
 				this.isFocus = true
 			},
-			onBlur() {
+			onBlur(e) {
+                let val = e.detail.value;
+                val = val.trim();
+                if(this.validate){
+                    if(this.validate == 'chinese'){//中文
+                        if(!/^[\u4e00-\u9fa5]+$/.test(val)){
+                            this.clear();
+                            return;
+                        }
+                    }else if(this.validate == 'english'){
+                        if(/[\u4e00-\u9fa5]/.test(val)){
+                            this.clear();
+                            return;
+                        }
+                    }
+                }
 				this.$nextTick(() => {
 					this.isFocus = false
 				})
 			},
 			onInput(e) {
-				this.$emit('input', e.detail.value)
+                let val = e.detail.value;
+                val = val.trim();
+                this.value = val;
+				this.$emit('input', val)
 			}
 		}
 	}
@@ -105,7 +125,7 @@
 		align-items: center;
 		/* width: 100%; */
 		flex: 1;
-		padding: 0 10px;
+		/* padding: 0 10px; */
 	}
 
 	.m-input-input {
@@ -113,6 +133,7 @@
 		width: 100%;
 		min-height: 100%;
 		line-height: inherit;
+        font-size: 28upx;
 		background-color: rgba(0, 0, 0, 0);
 	}
 
@@ -120,6 +141,10 @@
 		width: 20px;
 		font-size: 20px;
 		line-height: 20px;
-		color: #666666;
+		color: rgba(53, 53, 53, 0.6);
 	}
+    
+    .m-input-error{
+        border-bottom: 1px solid #FF0000;
+    }
 </style>

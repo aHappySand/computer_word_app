@@ -2,7 +2,7 @@
 // {
 // 	return {
 // 	  CONFIG_API_BASE_URL:"http://ykz.kuaidianzhuan.me",
-// 	  YKZ_API_VERSION: "1.2.11",
+// 	  API_VERSION: "1.2.11",
 // 	  BAI_DU:{
 // 		  base_url: 'http://api.fanyi.baidu.com/api/trans/vip/translate',
 // 		  app_id: '20200511000449346',
@@ -17,8 +17,8 @@
 // }
 
 module.exports = {
-	  CONFIG_API_BASE_URL:"http://ykz.kuaidianzhuan.me",
-	  YKZ_API_VERSION: "1.2.11",
+	  CONFIG_API_BASE_URL:"http://www.happysand.cn:8088",
+	  API_VERSION: "1.2.11",
 	  BAI_DU:{
 		  base_url: 'http://api.fanyi.baidu.com/api/trans/vip/translate',
 		  app_id: '20200511000449346',

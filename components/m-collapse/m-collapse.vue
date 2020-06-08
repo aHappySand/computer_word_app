@@ -1,7 +1,7 @@
 <template>
 	<view class="page">
 		<uni-collapse :accordion="true">
-			<uni-collapse-item v-for="(item, index) in accordion" :key="item.id" :title="item.title" :fav="item.fav" :show-animation="item.animation">
+			<uni-collapse-item v-for="(item, index) in wordData" :key="item.id" :title="item.title" :fav="item.fav" :show-animation="item.animation">
 				<block>
 				    <view class="uni-list-cell" hover-class="uni-list-cell-hover">
 				        <view class="uni-triplex-row">
@@ -30,194 +30,17 @@
 <script>
 	import uniCollapse from '@/components/uni-collapse/uni-collapse.vue'
 	import uniCollapseItem from '@/components/uni-collapse-item/uni-collapse-item.vue'
-	import uniList from '@/components/uni-list/uni-list.vue'
-	import uniListItem from '@/components/uni-list-item/uni-list-item.vue'
 
 	export default {
 		components: {
 			uniCollapse,
 			uniCollapseItem,
-			uniList,
-			uniListItem
 		},
+        props:{
+            wordData:Array
+        },
 		data() {
 			return {
-				accordion: [{
-						id: 0,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav: 1
-					},
-					{
-						id: 1,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav: 0
-					},
-					{
-						id: 2,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav:0
-					},
-					{
-						id: 1,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav: 0
-					},
-					{
-						id: 2,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav:0
-					},
-					{
-						id: 1,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav: 0
-					},
-					{
-						id: 2,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav:0
-					},
-					{
-						id: 1,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav: 0
-					},
-					{
-						id: 2,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav:0
-					},
-					{
-						id: 1,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav: 0
-					},
-					{
-						id: 2,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav:0
-					},
-					{
-						id: 1,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav: 0
-					},
-					{
-						id: 2,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav:0
-					},
-					{
-						id: 1,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav: 0
-					},
-					{
-						id: 2,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav:0
-					},
-					{
-						id: 1,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav: 0
-					},
-					{
-						id: 2,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav:0
-					},
-					{
-						id: 1,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav: 0
-					},
-					{
-						id: 2,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav:0
-					},
-					{
-						id: 1,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav: 0
-					},
-					{
-						id: 2,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav:0
-					},
-					{
-						id: 1,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav: 0
-					},
-					{
-						id: 2,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav:0
-					},
-					{
-						id: 1,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav: 0
-					},
-					{
-						id: 2,
-						title: '标题文字',
-						content: '手风琴效果',
-						animation: true,
-						fav:0
-					}
-				],
 				extraIcon: {
 					color: '#4cd964',
 					size: '26',
@@ -228,8 +51,7 @@
 		},
 		methods: {
 			change(index) {
-				console.log(this.accordion[index]);
-				this.accordion[index].fav = !this.accordion[index].fav;
+				this.$emit('change', index);
 			}
 		}
 	}

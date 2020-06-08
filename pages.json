@@ -13,7 +13,13 @@
 		}, {
 			"path": "pages/tab-bar/word",
 			"style": {
-				"navigationBarTitleText": "单词汇"
+				"navigationBarTitleText": "单词汇",
+				"navigationStyle": "custom",
+                "navigationBarBackgroundColor":"#f9f9f9",
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": false
+				}
 			}
 		}, {
 			"path": "pages/login/login",
@@ -33,9 +39,28 @@
 		}, {
 			"path": "pages/tab-bar/user",
 			"style": {
-				"navigationBarTitleText": "我的"
+				"navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#FFFFFF",
+                "backgroundColor": "#ebebeb"
+			}
+		}, {
+			"path": "pages/word/add",
+			"style": {
+				"navigationBarTitleText": "添加单词"
 			}
 		}
+        , {
+			"path": "pages/set/set",
+			"style": {
+				"navigationBarTitleText": "设置"
+			}
+		}
+        // ,{
+		// 	"path": "pages/nima/nima",
+		// 	"style": {
+		// 		"navigationBarTitleText": "登录"
+		// 	}
+		// }
 	],
 	"tabBar": {
 		"color": "#7a7e83",
@@ -61,7 +86,7 @@
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarBackgroundColor": "#0faeff",
+		"navigationBarBackgroundColor": "#fbf9fe",
 		"backgroundColor": "#fbf9fe"
 	}
 }

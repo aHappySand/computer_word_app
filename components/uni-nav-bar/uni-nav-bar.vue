@@ -1,5 +1,4 @@
 <template>
-
 	<view class="uni-navbar">
 		<view :class="{'uni-navbar--fixed': fixed,'uni-navbar--shadow':border,'uni-navbar--border':border}" :style="{'background-color':backgroundColor}" class="uni-navbar__content">
 			<uni-status-bar v-if="statusBar" />
@@ -122,7 +121,7 @@
 		width: 100%;
 		height: 44px;
 		line-height: 44px;
-		font-size: 16px
+		font-size: 14px
 	}
 
 	.uni-navbar__header-btns {

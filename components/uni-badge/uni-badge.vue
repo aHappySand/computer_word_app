@@ -1,5 +1,5 @@
 <template>
-	<text v-if="text" :class="inverted ? 'uni-badge-' + type + ' uni-badge--' + size + ' uni-badge-inverted' : 'uni-badge-' + type + ' uni-badge--' + size" class="uni-badge" @click="onClick()">{{ text }}</text>
+	<text v-if="text" :class="inverted ? 'uni-badge-' + type + ' uni-badge--' + size + ' uni-badge-inverted' : 'uni-badge-' + type + ' uni-badge--' + size" :style="{'background-color': bgColor}"  class="uni-badge" @click="onClick()">{{ text }}</text>
 </template>
 
 <script>
@@ -15,12 +15,16 @@
 				default: false
 			},
 			text: {
-				type: String,
+				type: String|Number,
 				default: ''
 			},
 			size: { // small.normal
 				type: String,
 				default: 'normal'
+			},
+			bgColor: {
+				type: String,
+				default: ''
 			}
 		},
 		methods: {
