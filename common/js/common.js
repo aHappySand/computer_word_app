@@ -9,7 +9,7 @@ export function showToast(msg){
 	}
 };
 
-export function saveWordDetail(data){
+export function saveWordDetail(data, _callback){
     let _this = this;
     uni.getNetworkType({
         success: function (res) {
@@ -24,11 +24,13 @@ export function saveWordDetail(data){
                 }
                 
                 // _this.$api.post('/word/save', postData).then(function(res){
-                    
                 // });
             }
             console.log(data);
-            _this.$DB.saveWord(data);
+            _this.$DB.saveWord(data).then(res => {
+                console.log(res);
+                _callback && _callback(res);
+            });
         }
     });
 }

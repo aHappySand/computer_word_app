@@ -79,9 +79,7 @@
         padding-bottom: 10upx;
     }
     
-    .blank{
-         height: 20upx;
-    }
+
     
     uni-view{
         display: flex;

@@ -6,8 +6,9 @@ import store from './store'
 import api from '@/common/http/index';
 console.log(api);
 
-
-// import DB from '@/common/js/table';
+// #ifdef APP-PLUS
+import DB from '@/common/js/table';
+// #endif
 // var DB = table();
 
 import {showToast, saveWordDetail} from '@/common/js/common';
@@ -18,7 +19,9 @@ Vue.prototype.$showToast=showToast;
 Vue.prototype.$saveWordDetail = saveWordDetail;
 Vue.prototype.$store = store
 Vue.prototype.$api = api
-// Vue.prototype.$DB = DB;
+// #ifdef APP-PLUS
+Vue.prototype.$DB = DB;
+// #endif
 
 App.mpType = 'app'
 

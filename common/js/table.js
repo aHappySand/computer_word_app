@@ -52,7 +52,8 @@ import myConf from "../myConf";
         var dtask = plus.downloader.createDownload(myConf.CONFIG_API_BASE_URL + "/public/data/word.db", 
         {filename: DB_PATH}, function(d, status){
             // 下载完成
-            if(status == 200){ 
+            if(status == 200){
+                DB.checkOpenDB();
                 console.log("Download success: " + d.filename);
             } else {
                  console.log("Download failed: " + status); 
@@ -178,7 +179,7 @@ import myConf from "../myConf";
 	
 	function getLatestWordId(fun){
 		return DB.selectSQL("select id from " + TABLE_WORD + " order by id desc limit 1").then(function(res){
-			fun(res[0]["id"]);
+			return fun(res[0]["id"]);
 		});
 	}
 	
@@ -190,7 +191,7 @@ import myConf from "../myConf";
 	/**
 	 * @param {string} spell 单词搜索
 	 */
-	function selectWord(spell, page){
+	function selectWordBySpell(spell, page){
 		let where = [{
 			key: 'spell',
 			op: 'like',
@@ -198,11 +199,166 @@ import myConf from "../myConf";
 		}];
 		return DB.select(TABLE_WORD, where, page);
 	}
+    
+    function selectWordByCase(fCase, page, mark){
+        let allCase = ['a',  'b',  'c',  'd',  'e',  'f',  'g',  'h',  'i',  'j',  'k',  'l',  'm',  'n',  'o',  'p',  'q',  'r',  's',  't',  'u',  'v',  'w',  'x',  'y',  'z'];
+        
+        let where1 = null;
+        if(mark != undefined){
+            where1 = {
+                key: 'mark',
+                op: '=',
+                value: mark
+            };
+        }
+        
+        if(fCase){
+            let index = allCase.indexOf(fCase);
+            let where = [{
+            	key: 'first_case',
+            	op: '=',
+            	value: fCase
+            }];
+            
+            where1 && where.push(where1);
+            return DB.select(TABLE_WORD, where, page).then(function(res){
+                var data = {loadOver: 0, data: []};
+                if(res && res.length>0){
+                    data.loadOver = res.length != 10 ? 1:0;
+                    for(let i in res){
+                        let word = res[i];
+                        word.phonetics = getWordPhoneticStr(word);
+                        data['data'].push(word);
+                    }
+                }else{
+                    data.loadOver = 1;
+                }
+                return data;
+            });
+        }else{
+            var data = [];
+            var promises = [];
+            for(let i in allCase){
+                data.push({letter: allCase[i], data:[],loadOver: 0, page: 1});
+                let where = [{
+                	key: 'first_case',
+                	op: '=',
+                	value: allCase[i]
+                }];
+                where1 && where.push(where1);
+                promises.push(DB.select(TABLE_WORD, where));
+            }
+            
+            return Promise.all(promises).then(function(res){
+                for(let i in res){
+                    if(res[i] && res[i].length>0){//查询的有结果
+                        for(let j in res[i]){
+                            let word = res[i][j];
+                            
+                            word.phonetics = getWordPhoneticStr(word);
+                            
+                            data[i]['data'].push(word);
+                        }
+                        data[i].loadOver = res[i].length != 10?1:0;
+                    }else{
+                        data[i].loadOver = 1;
+                    }
+                }
+                return data;
+            });
+        }
+        
+    }
+    
+    function getWordPhonetic(word){
+        var arr = [];
+        word['phonetic'] = '[' + word['phonetic'].replace(/[\[\]]/g, '') + ']';
+        word['us_phonetic'] = '[' + word['us_phonetic'].replace(/[\[\]]/g, '') + ']';
+        word['uk_phonetic'] = '[' + word['uk_phonetic'].replace(/[\[\]]/g, '') + ']';
+        
+        
+        if(word['us_phonetic'] != "[]" && word['us_phonetic']==word['uk_phonetic']){
+            arr.push(word['us_phonetic']);
+        }else{
+            if(word['phonetic'] != "[]"){
+                arr.push(word['phonetic']);
+            }
+            if(word['us_phonetic'] != "[]"){
+                arr.push(word['us_phonetic']);
+            }
+            if(word['uk_phonetic'] != "[]"){
+                arr.push(word['uk_phonetic']);
+            }
+        }
+        
+        return arr.join("   ");
+    }
+    
+    function getWordPhoneticStr(word){
+        var arr = [];
+        word['phonetic'] = '[' + word['phonetic'].replace(/[\[\]]/g, '') + ']';
+        word['us_phonetic'] = '[' + word['us_phonetic'].replace(/[\[\]]/g, '') + ']';
+        word['uk_phonetic'] = '[' + word['uk_phonetic'].replace(/[\[\]]/g, '') + ']';
+        
+        
+        if(word['us_phonetic'] != "[]" && word['us_phonetic']==word['uk_phonetic']){
+            word['phonetic'] = word['us_phonetic'];
+            word['us_phonetic'] = [];
+            word['uk_phonetic'] = [];
+            
+            arr.push(word['phonetic']);
+        }else{
+            if(word['phonetic']!="[]"){
+                word['phonetic'] = word['phonetic'];
+                arr.push(word['phonetic']);
+            }
+            if(word['us_phonetic']!="[]"){
+                word['us_phonetic'] = '美式 ' + word['us_phonetic'];
+                arr.push(word['us_phonetic']);
+            }
+            if(word['uk_phonetic']!="[]"){
+                word['uk_phonetic'] = '英式 ' + word['uk_phonetic'];
+                arr.push(word['uk_phonetic']);
+            }
+        }
+        return arr.join("   ");
+    }
 	
-	function selectWordByOther(wheres, page){
-		return DB.select(TABLE_WORD, wheres, page);
+	function selectWordById(id){
+        var promis = [];
+		promis.push(DB.select(TABLE_WORD, {id: id}));
+        promis.push(selectDetail(id));
+        promis.push(selectWebDetail(id));
+        return Promise.all(promis).then((res) => {
+            var data = {detail: [], webDetail: []};
+            data.word = res[0][0];
+            data.word['phonetics'] = getWordPhoneticStr(data.word);
+            if(res[1].length){
+                data.detail = res[1];
+            }
+            
+            if(res[2].length){
+                data.webDetail = res[2];
+            }
+            return data;
+        });
 	}
-	
+
+    function markWord(word){
+        let wordId = word.word_id||word.id;
+        if(word.mark){
+            unmarkWord(wordId);
+        }else{
+            updateWord({mark: 1}, {id: wordId});
+            DB.update('view',{mark: 1}, {word_id: wordId});
+        }
+    }
+    
+    function unmarkWord(wordId){
+        updateWord({mark: 0}, {id: wordId});
+        DB.update('view',{mark: 0}, {word_id: wordId});
+    }
+    
 	function insertDetail(keyValues){
 		DB.checkOpenDB();
 		return DB.insert(TABLE_DETAIL, keyValues);
@@ -241,34 +397,59 @@ import myConf from "../myConf";
 		return DB.select(TABLE_WEB_DETAIL, where);
 	}
 	
-	function insertView(keyValues){
+	function insertView(word){
 		DB.checkOpenDB();
-		keyValues['latest_time'] = Date.now() / 1000;
-		return DB.insert(TABLE_VIEW, keyValues);
+        return DB.select(TABLE_VIEW, {word_id: word.id}).then(res => {
+            let now = parseInt(Date.now() / 1000);
+            if(res.length>0){
+                var keyValues = {
+                    num: res[0].num+1,
+                    latest_time: now,
+                    update_time:now,
+                }
+                return DB.update(TABLE_VIEW, keyValues,{word_id: word.id});
+            }else{
+                var keyValues = {
+                    word_id: word.id,
+                    spell: word.spell,
+                    translation: word.translation,
+                    phonetics: word.phonetics,
+                    num: 1,
+                    latest_time: now,
+                    create_time: now
+                };
+                return DB.insert(TABLE_VIEW, keyValues);
+            }
+        });
+
 	}
 	
-	function selectView(wordId, page){
-		let where = [{
-			key: 'word_id',
-			op: '=',
-			value: wordId
-		}];
-		return DB.select(TABLE_VIEW, where, page);
+	function selectView(page){
+		return DB.select(TABLE_VIEW, [], page, 20, ["latest_time desc"]);
 	}
+    
+    function clearView(){
+        return DB.executeSQL("delete from " + TABLE_VIEW);
+    }
+    
+    function viewCount(){
+        return DB.selectSQL("select count(id) as count from view");
+    }
     
     function saveWord(wordData){
         var word = wordData.word,
-            details = wordData.detail;
+            details = wordData.detail,
             webDetails = wordData.webDetail;
         
-        insertWord(word).then(function(res){
-            getLatestWordId((id) => {
+        return insertWord(word).then(function(res){
+            return getLatestWordId((id) => {
+                let proms = [];
                 if(details){
                     for(let k in details){
                         let detail = details[k];
                         if(detail.translation){
                             detail['word_id'] = id;
-                            insertDetail(detail);
+                            proms.push(insertDetail(detail));
                         }
                     }
                 }
@@ -277,12 +458,20 @@ import myConf from "../myConf";
                         let detail = webDetails[k];
                         if(detail.translation){
                             detail['word_id'] = id;
-                            _this.$DB.insertWebDetail(detail);
+                            proms.push(insertWebDetail(detail));
                         }
                     }
                 }
+                return {word_id: id};
             });
         });
+    }
+    
+    function delWord(wordId){
+        DB.deleteItem(TABLE_WORD, {id: wordId});
+        DB.deleteItem(TABLE_DETAIL, {word_id: wordId});
+        DB.deleteItem(TABLE_WEB_DETAIL, {word_id: wordId});
+        return DB.deleteItem(TABLE_VIEW, {word_id: wordId});
     }
     
     function saveChineseWord(chinese, trans){
@@ -317,7 +506,7 @@ import myConf from "../myConf";
                         let detail = webDetails[k];
                         if(detail.translation){
                             detail['word_id'] = id;
-                            _this.$DB.insertWebDetail(detail);
+                            DB.insertWebDetail(detail);
                         }
                     }
                 }
@@ -326,12 +515,17 @@ import myConf from "../myConf";
     }
 
 	var exportsFunc = {
+        saveWord,
 		insertWord,
 		updateWord,
-		selectWord,
-		selectWordByOther,
+		selectWordBySpell,
+		selectWordById,
 		getLatestWordId,
-		
+        selectWordByCase,
+		markWord,
+        unmarkWord,
+        delWord,
+        
 		insertDetail,
 		updateDetail,
 		selectDetail,
@@ -342,6 +536,8 @@ import myConf from "../myConf";
 		
 		insertView,
 		selectView,
+        clearView,
+        viewCount,
         
         saveChineseWord,
 	};

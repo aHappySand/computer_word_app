@@ -1,8 +1,8 @@
 <template>
 	<view class="uni-indexed">
-		<scroll-view :scroll-into-view="scrollViewId" :style="{ height: winHeight + 'px' }" class="uni-indexed__list" scroll-y>
+		<scroll-view :scroll-into-view="scrollViewId" :style="{ height: winHeight + 'px' }" class="uni-indexed__list" scroll-y @scroll="scrollView">
 			<block v-for="(list, idx) in lists" :key="idx">
-				<view v-if="list.items && list.items.length > 0" :id="'uni-indexed-list-' + list.key" class="uni-indexed__list-title">{{ list.key }}</view>
+				<view v-if="list.items && list.items.length > 0" :id="'uni-indexed-list-' + list.key" class="uni-indexed__list-title">{{ list.key.toUpperCase() }}</view>
 				<view v-if="list.items && list.items.length > 0" class="uni-list">
 					<view v-for="(item, index) in list.items" :key="index" class="uni-list-item" hover-class="uni-list-item--hover">
 						<view class="uni-list-item__container" @click="onClick(idx, index)">
@@ -11,21 +11,30 @@
 							</view>
                             <view class="uni-flex uni-column m-word">
                                 <view class="uni-flex uni-row row2">
-                                    <view class="uni-list-item__content">{{ item.name }}</view>
-                                    <view class="m-list-item__phonetic" v-if="isShowPron">{{ item.phonetic }}</view>
+                                    <view class="uni-list-item__content">{{ item.spell }}</view>
+                                    <view class="m-list-item__phonetic" v-if="config.isShowPron">{{ item.phonetics }}</view>
                                 </view>
-                                <view v-if="isShowMean">
+                                <view v-if="config.isShowMean">
                                     <view class="m-list-item__translation">{{ item.translation }}</view>
                                 </view>
                             </view>
 						</view>
 					</view>
+                    <view v-if="list.loadOver==0" class="uni-list-item" hover-class="uni-list-item--hover">
+                    	<view class="uni-list-item__container" @click="loadMore(idx, list.key)">
+                            <view class="uni-flex uni-column m-word">
+                                <view class="uni-flex uni-row row-center">
+                                    <view class="uni-list-item__content">加载更多...</view>
+                                </view>
+                            </view>
+                    	</view>
+                    </view>
 				</view>
 			</block>
 		</scroll-view>
 		<view :class="touchmove ? 'active' : ''" :style="{ height: winHeight + 'px' }" class="uni-indexed__menu" @touchstart="touchStart" @touchmove.stop.prevent="touchMove" @touchend="touchEnd">
 			<text v-for="(list, key) in lists" :key="key" :class="touchmoveIndex == key ? 'active' : ''" :style="{ height: itemHeight + 'px', lineHeight: itemHeight + 'px' }" class="uni-indexed__menu-item">
-				{{ list.key }}
+				{{ list.key.toUpperCase() }}
 			</text>
 		</view>
 		<view v-if="touchmove" class="uni-indexed--alert">{{ lists[touchmoveIndex].key }}</view>
@@ -48,7 +57,24 @@
 			showSelect: {
 				type: Boolean,
 				default: false
-			}
+			},
+            configData:{
+                type: Array,
+                default(){
+                    return [
+                        {
+                            key: 'isShowPron',
+                            title: '显示发音',
+                            value: 0
+                        },
+                        {
+                            key: 'isShowMean',
+                            title: '显示释义',
+                            value: 0
+                        }
+                    ];
+                }
+            }
 		},
 		data() {
 			return {
@@ -58,8 +84,8 @@
 				itemHeight: 0,
 				winHeight: 0,
 				scrollViewId: '',
-                isShowPron: false,//是否显示发音
-                isShowMean: false,//是否显示中文意思
+                headHeight: 0,
+                config:{}
 			}
 		},
 		watch: {
@@ -68,14 +94,24 @@
 					this.setList()
 				},
 				deep: true
-			}
+			},
+            configData: {
+                handler: function(){
+                    this.getCacheConfig();
+                    this.setList();
+                },
+                deep: true
+            }
 		},
 		created() {
-			this.setList()
+			this.setList();
+            this.getCacheConfig();
 		},
 		methods: {
 			setList() {
-				let winHeight = uni.getSystemInfoSync().windowHeight
+                let sysInfo = uni.getSystemInfoSync();
+                this.headHeight = sysInfo.screenHeight - sysInfo.windowHeight;
+				let winHeight = sysInfo.windowHeight - sysInfo.windowBottom - sysInfo.statusBarHeight - 50;
 				this.itemHeight = winHeight / this.options.length
 				this.winHeight = winHeight
 
@@ -90,7 +126,7 @@
 						let obj = {}
                         obj['key'] = value.letter
                         if(typeof item == 'string'){
-                            obj['name'] = item
+                            obj['spell'] = item
                         }else{
                             for (let key in item) {
                                 obj[key] = item[key];
@@ -102,14 +138,15 @@
 					return {
 						title: value.letter,
 						key: value.letter,
+                        loadOver: value.loadOver,
 						items: items
 					}
-				})
-				// console.log(this.lists)
+				});
 			},
 			touchStart(e) {
+                console.log(uni.getSystemInfoSync());
 				this.touchmove = true
-				let pageY = e.touches[0].pageY
+				let pageY = e.touches[0].pageY - this.headHeight;
 				let index = Math.floor(pageY / this.itemHeight)
 				let item = this.lists[index]
 				if (item) {
@@ -118,17 +155,28 @@
 				}
 			},
 			touchMove(e) {
-				let pageY = e.touches[0].pageY
+                console.log(e.touches[0])
+                console.log(uni.getSystemInfoSync());
+				let pageY = e.touches[0].pageY - this.headHeight;
 				let index = Math.floor(pageY / this.itemHeight)
 				let item = this.lists[index]
 				if (item) {
-					this.scrollViewId = 'uni-indexed-list-' + item.key
+				// 	this.scrollViewId = 'uni-indexed-list-' + item.key
 					this.touchmoveIndex = index
 				}
 			},
 			touchEnd() {
+                let item = this.lists[this.touchmoveIndex]
+                if (item) {
+                	this.scrollViewId = 'uni-indexed-list-' + item.key;
+                    this.$emit("clickMenu", {index: this.touchmoveIndex, key: item.key})
+                }
 				this.touchmove = false
 				this.touchmoveIndex = -1
+                
+			},
+			scrollView(e) {
+                
 			},
 			onClick(idx, index) {
 				let obj = {}
@@ -154,7 +202,18 @@
 					item: obj,
 					select: select
 				})
-			}
+			},
+            loadMore(index, letter){
+                this.$emit('loadMore', {
+                    index: index,
+                    letter: letter
+                })
+            },
+            getCacheConfig(){
+                for(let i in this.configData){
+                    this.config[this.configData[i]['key']] = this.configData[i]['value'];
+                }
+            }
 		}
 	}
 </script>
@@ -247,9 +306,9 @@
 	}
 
 	.uni-indexed__menu {
-		width: 46upx;
-		height: 100vh;
-		background-color: #d3d3d3;
+		width: 60upx;
+		/* height: 100vh; */
+		/* background-color: #d3d3d3; */
 		display: flex;
 		flex-direction: column
 	}

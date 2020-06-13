@@ -49,18 +49,18 @@
 				"navigationBarTitleText": "添加单词"
 			}
 		}
+        ,{
+			"path": "pages/word/view-one",
+			"style": {
+				"navigationBarTitleText": "单词释义"
+			}
+		}
         , {
 			"path": "pages/set/set",
 			"style": {
 				"navigationBarTitleText": "设置"
 			}
 		}
-        // ,{
-		// 	"path": "pages/nima/nima",
-		// 	"style": {
-		// 		"navigationBarTitleText": "登录"
-		// 	}
-		// }
 	],
 	"tabBar": {
 		"color": "#7a7e83",

@@ -1,23 +1,20 @@
 <template>
 	<view class="page">
-		<uni-collapse :accordion="true">
-			<uni-collapse-item v-for="(item, index) in wordData" :key="item.id" :title="item.title" :fav="item.fav" :show-animation="item.animation">
+		<uni-collapse :accordion="true" v-on:change="changeOpen">
+			<uni-collapse-item v-for="(item, index) in wordData" :key="item.id" :title="item.spell" :fav="item.mark" :show-animation="item.animation">
 				<block>
 				    <view class="uni-list-cell" hover-class="uni-list-cell-hover">
 				        <view class="uni-triplex-row">
-							<view @click="change(index)">
-								<view class="iconfont" :class="{'icon-fav': item.fav, 'icon-unfav': !item.fav}"></view>
+							<view @click="changeFav(index)">
+								<view class="iconfont" :class="{'icon-fav': item.mark, 'icon-unfav': !item.mark}"></view>
 							</view>
 				            <view class="uni-triplex-left">
-								<text class="uni-text">列表内容文字,列表内容文字,列表内容文字,列表内容文字</text>
-								<text class="uni-text">列表内容文字,列表内容文字,列表内容文字,列表内容文字</text>
-								<text class="uni-text">列表内容文字,列表内容文字,列表内容文字,列表内容文字</text>
-				                <!-- <text class="uni-title uni-ellipsis">列表主标题</text> -->
-				                <!-- <text class="uni-text-small uni-ellipsis">列表内容文字,列表内容文字,列表内容文字,列表内容文字,列表内容文字,列表内容文字</text> -->
-				                <text class="uni-text">列表副标题</text>
+								<text class="uni-text">{{item.phonetics}}</text>
+								<text class="uni-text">{{item.translation}}</text>
 				            </view>
-				            <view class="uni-triplex-right">
-				                <text class="uni-h5">12:15</text>
+				            <view class="uni-triplex-right uni-flex uni-column row2" @click="showDetail(item.word_id)">
+				                <view><text class="uni-h5">{{getDate(item.latest_time)}}</text></view>
+                                <view>详情</view>
 				            </view>
 				        </view>
 				    </view>
@@ -50,9 +47,19 @@
 			}
 		},
 		methods: {
-			change(index) {
-				this.$emit('change', index);
-			}
+			changeFav(index) {
+				this.$emit('changeFav', index);
+			},
+            showDetail(id){
+                this.$emit('showDetail', id);
+            },
+            changeOpen(index){
+                this.$emit('open', index);
+            },
+            getDate(time){
+                let dat = new Date(time*1000);
+                return (dat.getMonth()+1) + "-" + dat.getDate();
+            },
 		}
 	}
 </script>
@@ -137,4 +144,8 @@
 		top: 40%;
 		left: 6px;
 	}
+    
+    .uni-triplex-left .uni-text{
+        margin-top: 18upx;
+    }
 </style>

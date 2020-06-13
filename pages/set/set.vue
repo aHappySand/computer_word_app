@@ -2,18 +2,34 @@
 	<view class="page">
         <view class="uni-list">
         	<view class="uni-list-cell" hover-class="uni-list-cell-hover" >
-        		<view class="uni-list-cell-navigate uni-navigate-right uni-media-list uni-flex uni-row row2">
+        		<view class="uni-list-cell-navigate uni-navigate-right uni-media-list uni-flex uni-row row2"  @click="open">
         			<view class="uni-media-list-body m-list-item">
-        				<view class="uni-media-list-text-top">背景颜色</view>
+        				<view class="uni-media-list-text-top">导航背景颜色</view>
         			</view>
                     <view class="">
                     	<view class="uni-media-list-text-top">
-                            <view class="color-span" :style="{'background-color': 'rgb('+color.r+','+color.g+','+color.b+','+ color.a +')'}" @click="open"></view>
+                            <view class="color-span" :style="{'background-color': 'rgb('+color.r+','+color.g+','+color.b+','+ color.a +')'}"></view>
                             <t-color-picker ref="colorPicker" :color="color" @confirm="confirm"></t-color-picker>
                         </view>
                     </view>
         		</view>
         	</view>
+            
+            <view class="uni-list-cell" hover-class="uni-list-cell-hover" >
+            	<view class="uni-list-cell-navigate uni-navigate-right uni-media-list uni-flex uni-row row2"  @click="clearView">
+            		<view class="uni-media-list-body m-list-item">
+            			<view class="uni-media-list-text-top">清理查看记录</view>
+            		</view>
+                    <view>
+                    	<view class="uni-media-list-text-top">
+                            <view>
+                                <text>{{viewCount}}个</text>
+                                <!-- <view v-if="viewCount>0" class="m-clear-text uni-icon uni-icon-trash"></view> -->
+                            </view>
+                        </view>
+                    </view>
+            	</view>
+            </view>
         </view>
     </view>
 </template>
@@ -26,12 +42,13 @@
 		},
         data(){
             return {
-                color: {r: 255,g: 0,b: 0,a: 1}
+                color: {r: 255,g: 0,b: 0,a: 1},
+                viewCount: 0,
             }
         },
         onLoad() {
             this.color = this.hexToRgb(uni.getStorageSync('nav-bg-color'));
-            console.log(this.color)
+            this.getViewCount();
         },
 		methods: {
             open(item) {
@@ -68,6 +85,28 @@
                     }
                 }
                 return rgb;
+            },
+            getViewCount(){
+                this.$DB.viewCount().then(res => {
+                    this.viewCount = res[0]['count'];
+                });
+            },
+            clearView(){
+                if(this.viewCount > 0){
+                    let _this = this;
+                    uni.showModal({
+                        title: '提示',
+                        content: '确认要删除吗？',
+                        success: function(res){
+                            if (res.confirm) {
+                                _this.$DB.clearView().then(res => {
+                                    _this.$showToast('清理完毕');
+                                    _this.viewCount = 0;
+                                });
+                            }
+                        }
+                    });
+                }
             }
 		}
 	}
@@ -172,4 +211,9 @@
 	.desc {
 		/* text-indent: 40upx; */
 	}
+    
+    .m-clear-text{
+        color: #CCCCCC;
+        font-size: 14px;
+    }
 </style>

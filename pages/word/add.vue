@@ -1,95 +1,91 @@
 <template>
-	<view class="addPage">
+	<view class="content">
 		<view class="sub-title">添加中文释义</view>
-		<view class="uni-padding-wrap uni-common-mt">
-			<form @submit="formSubmit" @reset="formReset">
-                <view class="uni-form-item row">
-                	<view class="title">中文</view>
-                	<m-input class="uni-input m-input" :class="{'m-require':word.translation=='' && isShowRequire}" name="word.translation" v-model="word.translation" :clearable=false placeholder="中文名称" validate="chinese"></m-input>
+		<view class="input-group">
+            <view class="input-row">
+                <view class="uni-flex title">
+                    <view>中文</view>
                 </view>
-                <view class="uni-form-item row">
-                	<view class="title">英文翻译</view>
-                	<m-input class="uni-input" :class="{'m-require':word.spell=='' && isShowRequire}"  name="word.spell" v-model="word.spell" placeholder="英文单词"  :clearable="false" validate="english"></m-input>
-                </view>
-                <view class="uni-form-item row">
-                	<view class="title">美式发音</view>
-                	<m-input class="uni-input" name="word.us_phonetic" v-model="word.us_phonetic" placeholder="美式发音"  :clearable="false" validate="english"></m-input>
-                </view>
-                <view class="uni-form-item row">
-                	<view class="title">英式发音</view>
-                	<m-input class="uni-input" name="word.uk_phonetic" v-model="word.uk_phonetic" placeholder="英式发音"  :clearable="false" validate="english"></m-input>
-                </view>
-				<view class="uni-form-item row">
-					<view class="title">日常发音</view>
-					<m-input class="uni-input" name="word.phonetic" v-model="word.phonetic" placeholder="日常发音"  :clearable="false" validate="english"></m-input>
-				</view>
-			</form>
+                <m-input class="uni-input m-input" :class="{'m-require':word.translation=='' && isShowRequire}" name="word.translation" v-model="word.translation" :clearable=false placeholder="中文名称" validate="chinese"></m-input>
+            </view>
+            <view class="input-row">
+                <view class="uni-flex title">英文翻译</view>
+                <m-input class="uni-input m-input" :class="{'m-require':word.spell=='' && isShowRequire}"  name="word.spell" v-model="word.spell" placeholder="英文单词"  :clearable="false" validate="english"></m-input>
+            </view>
+            <view class="input-row">
+                <view class="uni-flex title">美式发音</view>
+                <m-input class="uni-input m-input" name="word.us_phonetic" v-model="word.us_phonetic" placeholder="美式发音"  :clearable="false" validate="english"></m-input>
+            </view>
+            <view class="input-row">
+                <view class="uni-flex title">英式发音</view>
+                <m-input class="uni-input m-input" name="word.uk_phonetic" v-model="word.uk_phonetic" placeholder="英式发音"  :clearable="false" validate="english"></m-input>
+            </view>
+            <view class="input-row">
+                <view class="uni-flex title">日常发音</view>
+                <m-input class="uni-input m-input" name="word.phonetic" v-model="word.phonetic" placeholder="日常发音"  :clearable="false" validate="english"></m-input>
+            </view>
 		</view>
         
+        
         <view class="sub-title">其他意思详解</view>
-        <view class="uni-padding-wrap uni-common-mt">
-        	<!-- <form @submit="formSubmit" @reset="formReset"> -->
-            <view  v-for="(item,key) in arrDetail" :key="key" class="uni-flex uni-column m-item">
-                <view class="m-bradge" style="text-align: center;">
-                    <uni-badge :text="key+1" type="primary" bgColor="#55aaff"/>
-                </view>
-                <view class="uni-flex uni-row" style="-webkit-justify-content: space-between;justify-content: space-between;">
-                    <view style="width: 100%;">
-                        <view class="uni-form-item row">
-                            <view class="title">词性</view>
-                            <view class="uni-list-cell-db">
-                                <picker @change="bindPickerChange" v-model="arrDetail[key].type_index" :value="arrDetail[key].type_index" :range="wordProp" range-key="name">
-                                    <view  @click="selectPicker(key)" class="uni-input m-uni-input">{{wordProp[item.type_index].name}}</view>
-                                </picker>
-                            </view>
-                        </view>
-                        <view class="uni-form-item row">
-                            <view class="title">中文意思</view>
-                            <m-input class="uni-input m-uni-input" name="arrDetail[key].translation" v-model="arrDetail[key].translation" :value="item.translation" placeholder="中文意思"  :clearable="false"></m-input>
+        <!-- <form @submit="formSubmit" @reset="formReset"> -->
+        <view  v-for="(item,key) in arrDetail" :key="key" class="input-group uni-flex uni-column m-item">
+            <view class="m-bradge" style="text-align: center;">
+                <uni-badge :text="key+1" type="primary" bgColor="#55aaff"/>
+            </view>
+            <view class="uni-flex uni-row" style="-webkit-justify-content: space-between;justify-content: space-between;">
+                <view style="width: 100%;">
+                    <view class="input-row">
+                        <view class="uni-flex title">词性</view>
+                        <view class="uni-list-cell-db">
+                            <picker @change="bindPickerChange" v-model="arrDetail[key].type_index" :value="arrDetail[key].type_index" :range="wordProp" range-key="name">
+                                <view  @click="selectPicker(key)" class="uni-input m-input">{{wordProp[item.type_index].name}}</view>
+                            </picker>
                         </view>
                     </view>
-                    <view class="uni-flex m-center uni-column">
-                    <view v-if="key == arrDetail.length-1" class="icon-item m-op">
-                        <uni-icons type="plus" color="#55aaff" size="20" @click="addDetail(key)" />
-                    </view>
-                    <view v-else class="icon-item m-op">
-                        <uni-icons type="minus" size="20" @click="delDetail(key)" />
+                    <view class="input-row">
+                        <view class="uni-flex title">中文意思</view>
+                        <m-input class="uni-input m-input" name="arrDetail[key].translation" v-model="arrDetail[key].translation" :value="item.translation" placeholder="中文意思"  :clearable="false"></m-input>
                     </view>
                 </view>
+                <view class="uni-flex m-center uni-column">
+                <view v-if="key == arrDetail.length-1" class="icon-item m-op" @click="addDetail(key)">
+                    <uni-icons type="plus" color="#55aaff" size="20" />
+                </view>
+                <view v-else class="icon-item m-op" @click="delDetail(key)" >
+                    <uni-icons type="minus" size="20"/>
                 </view>
             </view>
-        	<!-- </form> -->
+            </view>
         </view>
+        <!-- </form> -->
         
         <view class="sub-title">网络词组</view>
-        <view class="uni-padding-wrap uni-common-mt">
-        	<!-- <form @submit="formSubmit" @reset="formReset"> -->
-            <view  v-for="(item,key) in webDetail" :key="key" class="uni-flex uni-column m-item">
-                <view class="m-bradge" style="text-align: center;">
-                    <uni-badge :text="key+1" type="primary" bgColor="#94f69f"/>
-                </view>
-                <view class="uni-flex uni-row" style="-webkit-justify-content: space-between;justify-content: space-between;">
-                    <view style="width: 100%;">
-                        <view class="uni-form-item row">
-                            <view class="title">英文</view>
-                            <m-input class="uni-input m-uni-input" name="webDetail[key].spell" v-model="webDetail[key].spell" :value="item.spell" placeholder="英文词组"  :clearable="false" validate="english"></m-input>
-                        </view>
-                        <view class="uni-form-item row">
-                            <view class="title">中文意思</view>
-                            <m-input class="uni-input m-uni-input" name="webDetail[key].translation" v-model="webDetail[key].translation" :value="item.translation" placeholder="中文意思"  :clearable="false"></m-input>
-                        </view>
+
+        <view  v-for="(item,key) in webDetail" :key="key" class="input-group uni-flex uni-column m-item">
+            <view class="m-bradge" style="text-align: center;">
+                <uni-badge :text="key+1" type="primary" bgColor="#94f69f"/>
+            </view>
+            <view class="uni-flex uni-row" style="-webkit-justify-content: space-between;justify-content: space-between;">
+                <view style="width: 100%;">
+                    <view class="input-row">
+                        <view class="uni-flex title">英文</view>
+                        <m-input class="uni-input m-input" name="webDetail[key].spell" v-model="webDetail[key].spell" :value="item.spell" placeholder="英文词组"  :clearable="false" validate="english"></m-input>
                     </view>
-                    <view class="uni-flex m-center uni-column">
-                    <view v-if="key == webDetail.length-1" class="icon-item m-op">
-                        <uni-icons type="plus" color="#94f69f" size="20" @click="addWebDetail(key)" />
-                    </view>
-                    <view v-else class="icon-item m-op">
-                        <uni-icons type="minus" size="20" @click="delWebDetail(key)" />
+                    <view class="input-row">
+                        <view class="uni-flex title">中文意思</view>
+                        <m-input class="uni-input m-input" name="webDetail[key].translation" v-model="webDetail[key].translation" :value="item.translation" placeholder="中文意思"  :clearable="false"></m-input>
                     </view>
                 </view>
+                <view class="uni-flex m-center uni-column">
+                    <view v-if="key == webDetail.length-1" class="icon-item m-op" @click="addWebDetail(key)">
+                        <uni-icons type="plus" color="#94f69f" size="20" />
+                    </view>
+                    <view v-else class="icon-item m-op" @click="delWebDetail(key)">
+                        <uni-icons type="minus" size="20" />
+                    </view>
                 </view>
             </view>
-        	<!-- </form> -->
         </view>
         
         <view class="uni-btn-v">
@@ -242,15 +238,27 @@
 </script>
 
 <style >
-    .uni-form-item .title {
-        padding: 20rpx 0;
+    .content{
+        padding: 0px;
     }
-    
+    .input-group{
+        margin-top: 10upx;
+        padding-bottom: 12upx;
+        font-size: 28upx;
+    }
     .sub-title{
         text-align: center;
         line-height: 60upx;
         color: #ccc;
         margin-top: 28upx;
+        
+    }
+    
+    .title{
+        -webkit-justify-content: left;
+        justify-content: left;
+        -webkit-align-items: center;
+        align-items: center;
     }
     
     .m-center{
@@ -262,44 +270,24 @@
         align-items: center;
     }
     
-     .uni-input{
-        position: absolute;
-        left: 150upx;
-        width: 68%;
-        font-size: 24upx;
-        border-bottom: 1px solid #efeff4;
+    .m-op{
+        padding-right: 10upx;
     }
     
-    .m-uni-input{
-        width: 58%;
+    .m-input{
+        border-bottom: 2upx solid #eee;
+        margin-right: 16upx;
         font-size: 28upx;
     }
     
-    
-    .m-op{
-        margin-top: 10upx;
+    .input-group::before{
+        background-color: white;
     }
-    
-    .m-item{
-        margin-bottom: 10upx;
-        /* border-bottom: 2upx dotted #c0ddfd; */
+    .input-group::after{
+        background-color: white;
     }
-    
-    .m-bradge{
-        color: #0FAEFF;
-    }
-    
     
     .m-btn{
-        background-color: #53b2fa;
-        color: #ffffff;
-    }
-    
-    .m-require{
-        border-bottom: 1px solid #f3027d;
-    }
-    
-    .uni-input-placeholder{
-        font-size: 28upx;
+        background-color: #0FAEFF;
     }
 </style>

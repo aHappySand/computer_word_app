@@ -5,7 +5,7 @@
         DB_PATH = option.db_path;
         DB_NAME = option.db_name;
     }
-	console.log($)
+    
 	// 打开数据库
 	function openDB(){
 		return new Promise((resolve, reject) => {
@@ -82,8 +82,6 @@
 				name: DB_NAME,
 				sql: sql,
 				success: function(e){
-					console.log(sql);
-					console.log('executeSql success!');
 					resolve(e);
 				},
 				fail: function(e){
@@ -119,7 +117,7 @@
 	}
 		
 	function getKeyVal(keyValues){
-		console.log(typeof null);
+
 		let arrKey = [],
 			arrVal = [];
 		for(var k in keyValues){
@@ -160,9 +158,7 @@
 	
 	function update(table, keyValues, wheres){
 		let arrSet = keyAndValue(keyValues);
-		console.log(arrSet);
 		let arrWhere = whereKeyValue(wheres);
-		console.log(arrWhere);
 		let sql = "update " + table + " set " + arrSet.join(",") + " where " + arrWhere.join(" AND ");
 		return executeSQL(sql);
 	}
@@ -180,8 +176,8 @@
 				name: DB_NAME,
 				sql: sql,
 				success: function(data){
-					console.log(sql, 'result:');
-					console.log(JSON.stringify(data));
+					// console.log(sql, 'result:');
+					// console.log(JSON.stringify(data));
 					resolve(data);
 				},
 				fail: function(e){
@@ -192,7 +188,7 @@
 		});
 	}
 	
-	function select(table, wheres, page, limit){
+	function select(table, wheres, page, limit, orderBy){
 		page = page || 1;
 		limit = limit || 10;
 		
@@ -212,9 +208,14 @@
 		for(let k in wheres){
 			arrWhere.push( wheres[k].key +" "+ wheres[k].op + " " + escape(wheres[k].value));
 		}
+        
+        let order = "";
+        if(orderBy){
+            order = " order by " + orderBy.join(", ");
+        }
 		
-		let limitOffset = "limit " + limit + " offset " + (page - 1) * limit;
-		let sql = "select * from " + table + " where " + arrWhere.join(" and ") + " " + limitOffset;
+		let limitOffset = " limit " + limit + " offset " + (page - 1) * limit;
+		let sql = "select * from " + table + (arrWhere.length>0 ? " where " + arrWhere.join(" and ") : "") + " " + order + limitOffset;
 		return selectSQL(sql);
 	}
 	
@@ -232,6 +233,7 @@
 		checkOpenDB,
         
         executeSQL,
+        selectSQL,
         
 		beginTransactionDB,
 		commitTransactionDB,
