@@ -61,6 +61,12 @@
 				"navigationBarTitleText": "设置"
 			}
 		}
+        , {
+        	"path": "pages/question/add",
+        	"style": {
+        		"navigationBarTitleText": "反馈问题"
+        	}
+        }
 	],
 	"tabBar": {
 		"color": "#7a7e83",

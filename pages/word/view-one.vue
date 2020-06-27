@@ -14,6 +14,10 @@
                     <view class="m-icon uni-icon uni-icon-more-filled" @click="isShowMore=true"></view>
                 </view>
             </view>
+            <!-- 基本大义 -->
+            <view class="uni-flex uni-row">
+                <view><text>{{word.translation}}</text></view>
+            </view>
             <!-- 发音 -->
             <view class="uni-flex uni-row m-phonetic">
                 <view><text>{{word.phonetics}}</text></view>
@@ -46,6 +50,11 @@
                     <view class="g-pl-8 g-pr-8 g-pt-8 g-pb-8 g-ml-12 g-mr-12 accountName uni-flex uni-row row2"  @click.stop="clearCache()">
                        <view>清除本地缓存</view>
                        <view class="uni-icon uni-icon-closeempty"></view>
+                    </view>
+                    
+                    <view class="g-pl-8 g-pr-8 g-pt-8 g-pb-8 g-ml-12 g-mr-12 accountName uni-flex uni-row row2"  @click.stop="sendQuestion()">
+                       <view>反馈问题</view>
+                       <view class="uni-icon uni-icon-arrowthinright"></view>
                     </view>
                </view>
            </view>
@@ -108,6 +117,11 @@
                         url: "/pages/tab-bar/main"
                     });
                 });
+            },
+            sendQuestion(){
+                uni.navigateTo({
+                    url: "/pages/question/add?word_id=" + this.word_id
+                })
             }
 		}
 	}
