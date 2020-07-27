@@ -130,6 +130,7 @@
             loadMore(item){
                 let curr = this.wordList[item.index];
                 this.$DB.selectWordByCase(curr.letter, curr.page+1, this.isShowMark).then(data => {
+                    console.log(data);
                     this.wordList[item.index].loadOver = data.loadOver;
                     this.wordList[item.index].data = this.wordList[item.index].data.concat(data.data);
                     this.wordList[item.index].page = curr.page+1;

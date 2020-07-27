@@ -112,6 +112,7 @@
                 uni.setStorageSync('isViewWord', 1);
             },
             clearCache(){
+                this.isShowMore = false;
                 this.$DB.delWord(this.word.id).then(res => {
                     uni.switchTab({
                         url: "/pages/tab-bar/main"
@@ -119,6 +120,7 @@
                 });
             },
             sendQuestion(){
+                this.isShowMore = false;
                 uni.navigateTo({
                     url: "/pages/question/add?word_id=" + this.word_id
                 })

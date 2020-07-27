@@ -7,7 +7,7 @@
         	<view class="uni-flex uni-row m-head-item"  v-if="!hasLogin">
                 <view>点击</view>
                 <view class="a-link"  @tap="bindLogin"> 登录 </view> / 
-                <view class="a-link">注册</view>
+                <view class="a-link"  @tap="reg">注册</view>
         	</view>
             <view  v-if="hasLogin" class="uni-flex m-head-item" style="-webkit-flex: 1;flex: 1;-webkit-justify-content: left;justify-content: left;-webkit-align-items: center;align-items: left;">
                 <view class="uni-flex uni-row">昵称</view>
@@ -97,6 +97,11 @@
             },
             togglePopup(type) {
             	this.showType = type;
+            },
+            reg(){
+                uni.navigateTo({
+                	url: "/pages/reg/reg",
+                });
             }
 		}
 	}
